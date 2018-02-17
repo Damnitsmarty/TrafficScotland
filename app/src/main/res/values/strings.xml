@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TrafficScotland</string>
+
+    <string name="RSS_incidents">https://trafficscotland.org/rss/feeds/currentincidents.aspx</string>
+    <string name="RSS_roadworks">https://trafficscotland.org/rss/feeds/roadworks.aspx</string>
+    <string name="RSS_planned">https://trafficscotland.org/rss/feeds/plannedroadworks.aspx</string>
+    <string name="title_roadwork_list">Roadworks</string>
+    <string name="title_roadwork_detail">Roadwork Detail</string>
 </resources>
