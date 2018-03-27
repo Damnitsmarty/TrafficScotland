@@ -1,15 +1,23 @@
 package uk.ac.gcu.mkolev200.trafficscotland;
 
+import android.app.ActivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.util.Log;
-import android.util.Xml;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,104 +30,68 @@ import java.util.List;
 
 import java.util.regex.*;
 
+import uk.ac.gcu.mkolev200.trafficscotland.data.Feed;
 import uk.ac.gcu.mkolev200.trafficscotland.data.FeedItem;
-import uk.ac.gcu.mkolev200.trafficscotland.data.IncidentItem;
+import uk.ac.gcu.mkolev200.trafficscotland.databinding.FeedItemBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FeedListFragment.OnFragmentInteractionListener{
 
-    SwipeRefreshLayout swipeRefreshLayout;
-    RecyclerView recyclerView;
+    UIContainerMainActivity ui;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        ui = new UIContainerMainActivity(this);
 
-        //assign views
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        Feed feed_Incidents = new Feed(getString(R.string.RSS_incidents));
+        Feed feed_Roadworks = new Feed(getString(R.string.RSS_roadworks));
+        Feed feed_Planned = new Feed(getString(R.string.RSS_planned));
 
 
-        //add refresh listener
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new FetchFeedTask().execute((Void) null);
-            }
-        });
+//        ui.recView_Incidents.setLayoutManager(new LinearLayoutManager(this));
+//        ui.recView_Roadworks.setLayoutManager(new LinearLayoutManager(this));
+//        ui.recView_Planned.setLayoutManager(new LinearLayoutManager(this));
+//
+//        ui.recView_Incidents.setAdapter(feed_Incidents.getAdapter());
+//        ui.recView_Roadworks.setAdapter(feed_Roadworks.getAdapter());
+//        ui.recView_Planned.setAdapter(feed_Planned.getAdapter());
+
+
+//        //add refresh listener
+//        ui.swipe_Incidents.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+////                feed_Incidents.update();
+//            }
+//        });
+//
+//
+//        ui.lay_tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                ui.viewPager.setCurrentItem(tab.getPosition());
+//                Toast.makeText(getBaseContext(), "SelectedTab: " + tab.getPosition(), Toast.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-
-
-
-
-
-
-
-
-
-    public List<FeedItem> parseFeedRegex(String feed){
-
-        //result
-        List<FeedItem> items = new ArrayList<>();
-
-        String itemRegex = "<item>.*?</item>";
-        Pattern regex = Pattern.compile(itemRegex);
-
-        Matcher matches = regex.matcher(feed);
-        while(matches.find()){
-            items.add(
-                    IncidentItem.parse(matches.group(0))
-            );
-        }
-
-
-
-        return items;
-    }
-
-
-    private class FetchFeedTask extends AsyncTask<Void, Void, List<FeedItem>> {
-
-        @Override
-        protected void onPreExecute() {
-            swipeRefreshLayout.setRefreshing(true);
-        }
-
-
-        @Override
-        protected List<FeedItem> doInBackground(Void... voids) {
-            try {
-
-                URL url = new URL(getResources().getString(R.string.RSS_incidents));
-                URLConnection con = url.openConnection();
-                InputStream inputStream = con.getInputStream();
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String source = "";
-                String line = "";
-                while((line = bReader.readLine()) != null){
-                    source+= line;
-                }
-                //close the reader
-                bReader.close();
-
-                List<FeedItem> list = parseFeedRegex(source);
-                return list;
-            } catch (IOException e) {
-                Log.e("IOException", "Error trying to get page", e);
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(List<FeedItem> res){
-            swipeRefreshLayout.setRefreshing(false);
-            if(res != null){
-
-            }
-        }
     }
 }

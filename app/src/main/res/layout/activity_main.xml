@@ -5,23 +5,97 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
 
+    android:orientation="vertical"
     tools:context="uk.ac.gcu.mkolev200.trafficscotland.MainActivity">
 
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/layout_tabs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:tabSelectedTextColor="@android:color/white"
+        app:tabTextColor="@android:color/white">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Title_Incidents" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Title_Roadworks" />
+    </android.support.design.widget.TabLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_msg"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:elevation="8dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/icon_errMsg"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:elevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_cloud_off_black_24dp" />
+
+        <TextView
+            android:id="@+id/lbl_errMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/ERR_feedLoad"
+            android:textAppearance="@style/TextAppearance.AppCompat.Notification"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_errMsg"
+            app:layout_constraintStart_toEndOf="@+id/icon_errMsg"
+            app:layout_constraintTop_toTopOf="@+id/icon_errMsg" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:id="@+id/viewPager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:id="@+id/viewPager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<fragment-->
+            <!--android:id="@+id/frag_Roadworks"-->
+            <!--class="uk.ac.gcu.mkolev200.trafficscotland.FeedListFragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <!--<fragment-->
+            <!--android:id="@+id/frag_Planned"-->
+            <!--class="uk.ac.gcu.mkolev200.trafficscotland.FeedListFragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+    <!--</android.support.v4.view.ViewPager>-->
+
+    <fragment
+        android:id="@+id/frag_Incidents"
+        class="uk.ac.gcu.mkolev200.trafficscotland.FeedListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!--</android.support.v4.view.ViewPager>-->
 
 
 </LinearLayout>

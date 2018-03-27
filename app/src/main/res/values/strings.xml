@@ -4,6 +4,14 @@
     <string name="RSS_incidents">https://trafficscotland.org/rss/feeds/currentincidents.aspx</string>
     <string name="RSS_roadworks">https://trafficscotland.org/rss/feeds/roadworks.aspx</string>
     <string name="RSS_planned">https://trafficscotland.org/rss/feeds/plannedroadworks.aspx</string>
-    <string name="title_roadwork_list">Roadworks</string>
-    <string name="title_roadwork_detail">Roadwork Detail</string>
+
+    <string name="Title_Incidents">Incidents</string>
+    <string name="Title_Roadworks">Roadworks</string>
+
+    <string name="ERR_noConnection">No Internet Connection</string>
+    <string name="ERR_feedLoad">Could not load feed</string>
+    <string name="ERR_feedNoItems">There are no items here</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

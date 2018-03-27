@@ -16,15 +16,15 @@ public class IncidentItem extends FeedItem {
     }
 
     public IncidentItem(String title, String desc, Date postDate, GeoPoint point){
-        super(title,desc,postDate);
+        super();
         this.point = point;
     }
     public IncidentItem(String title, String desc, String postDate, GeoPoint point){
-        super(title,desc,postDate);
+        super();
         this.point = point;
     }
 
-    @Nullable
+
     public static IncidentItem parse(String str){
         String titleRegex = "<title>(.*?)<\\/title>";
         String descRegex = "<description>(.*?)<\\/description>";
@@ -49,7 +49,7 @@ public class IncidentItem extends FeedItem {
         //date search
         matches.usePattern(Pattern.compile(dateRegex));
         if(matches.find())
-            item.setDate(matches.group(1));
+//            item.setDate(matches.group(1));
 
 
         //geoPoint search
