@@ -2,11 +2,13 @@ package uk.ac.gcu.mkolev200.trafficscotland;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
+import android.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import uk.ac.gcu.mkolev200.trafficscotland.data.FeedItem;
+
+/** Created by Martin Kolev (S1435614) */
 
 public class MainActivity extends AppCompatActivity implements FeedListFragment.OnFragmentItemInteractionListener {
     public static final String EXTRA_FEED_ITEM = "extra:feed_item";
@@ -46,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements FeedListFragment.
 
         m_layout_msg = findViewById(R.id.layout_msg);
 
-
+        setSupportActionBar((Toolbar) findViewById(R.id.main_toolbar));
         m_Pager = findViewById(R.id.viewPager);
         m_TabLayout = findViewById(R.id.layout_tabs);
         m_PagerAdapter = new FeedsPagerAdapter(getSupportFragmentManager());
@@ -78,7 +82,37 @@ public class MainActivity extends AppCompatActivity implements FeedListFragment.
     }
 
 
+    //-- TOOLBAR MENU --//
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search,menu);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                for(int i=0; i< m_PagerAdapter.getCount();i++){
+                    ((FeedListFragment)((FeedsPagerAdapter) m_PagerAdapter).getItem(i)).m_adapter.getFilter().filter(query);
+                }
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                for(int i=0; i< m_PagerAdapter.getCount();i++) {
+                    ((FeedListFragment) ((FeedsPagerAdapter) m_PagerAdapter).getItem(i)).m_adapter.getFilter().filter("");
+                }
+                return false;
+            }
+        });
+        return true;
+    }
+    //-- ERROR MESSAGE --//
     public void showErrorMessage(Error err){
         switch (err){
             case NOITEMS:

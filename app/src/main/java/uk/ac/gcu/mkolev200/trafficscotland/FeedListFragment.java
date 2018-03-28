@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import uk.ac.gcu.mkolev200.trafficscotland.data.FeedItem;
 
+/** Created by Martin Kolev (S1435614) */
 
 /**
  * A simple {@link Fragment} subclass.

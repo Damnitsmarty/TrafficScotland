@@ -19,6 +19,8 @@ import java.util.Map;
 
 import uk.ac.gcu.mkolev200.trafficscotland.data.FeedItem;
 
+/** Created by Martin Kolev (S1435614) */
+
 public class ItemDetailsActivity extends AppCompatActivity
     implements OnMapReadyCallback{
 
