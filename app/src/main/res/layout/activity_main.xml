@@ -13,11 +13,22 @@
     tools:context="uk.ac.gcu.mkolev200.trafficscotland.MainActivity">
 
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="5dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:title="Traffic Scotland" />
+
     <android.support.design.widget.TabLayout
         android:id="@+id/layout_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:elevation="5dp"
         app:tabSelectedTextColor="@android:color/white"
         app:tabTextColor="@android:color/white">
 
@@ -27,7 +38,7 @@
         android:id="@+id/layout_msg"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:elevation="8dp"
+        android:background="@color/timespan_l"
         android:visibility="gone">
 
         <ImageView
@@ -52,6 +63,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/ERR_feedLoad"
             android:textAppearance="@style/TextAppearance.AppCompat.Notification"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="@+id/icon_errMsg"
             app:layout_constraintStart_toEndOf="@+id/icon_errMsg"
             app:layout_constraintTop_toTopOf="@+id/icon_errMsg" />

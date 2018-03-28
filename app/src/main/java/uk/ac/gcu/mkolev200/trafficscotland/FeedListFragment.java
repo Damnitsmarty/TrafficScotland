@@ -1,7 +1,6 @@
 package uk.ac.gcu.mkolev200.trafficscotland;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -161,6 +160,10 @@ public class FeedListFragment extends Fragment {
 
         }
     }
+
+    public void filterByQuery(String query){
+
+    }
     public boolean try_FetchFeed(){
 
         //Create a new m_task if null
@@ -209,6 +212,8 @@ public class FeedListFragment extends Fragment {
     public interface OnFragmentItemInteractionListener {
         // TODO: Update argument type and name
         void onItemClick(FeedItem item);
+        void onRefreshStart();
+        void onRefreshEnd(FeedListAdapter adapter);
     }
 
 
@@ -219,13 +224,23 @@ public class FeedListFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
+            if(m_listener != null)
+                m_listener.onRefreshStart();
             m_swipeRefreshLayout.setRefreshing(true);
         }
 
         @Override
         protected void onPostExecute(List<FeedItem> res) {
             m_swipeRefreshLayout.setRefreshing(false);
+            if(res == null){
+                //show error message
+                ((MainActivity) getContext()).showErrorMessage(MainActivity.Error.NOCONNECTION);
+                return;
+            }
             m_adapter.swapList(res);
+            if(m_listener != null)
+                m_listener.onRefreshEnd(m_adapter);
+
         }
 
         protected List<FeedItem> parseFeedRegex(FeedItem.ItemType type, String source) {
