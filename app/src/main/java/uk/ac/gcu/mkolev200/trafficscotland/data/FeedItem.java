@@ -1,20 +1,31 @@
 package uk.ac.gcu.mkolev200.trafficscotland.data;
 
+import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.ac.gcu.mkolev200.trafficscotland.R;
 
 
-public class FeedItem {
+public class FeedItem{
+
     public enum ItemType{
         INCIDENT,
-        ROADWORK,
-        PLANNED
+        PLANNED,
+        ROADWORK
     }
+
+    //we need the source string so we can compile the object at any time from a parcel
+    public String source = "";
+
 
     public ItemType type;
     public String title = "NO_TITLE";
@@ -30,12 +41,48 @@ public class FeedItem {
 
 
     public boolean equals(FeedItem item){
-        return  title == item.title &&
-                description == item.description &&
+        return  title.equals(item.title) &&
+                description.equals(item.description) &&
                 postDate == item.postDate;
     }
+    public String getPostDateTimeSpan(){
+        if(type == ItemType.PLANNED)
+            return "";
+        return android.text.format.DateUtils.getRelativeTimeSpanString(postDate.getTime()).toString();
+    }
 
-    public void extractRoadID(){
+    public String getEndDateTimeSpan(){
+        if(type == ItemType.INCIDENT)
+            return "";
+        return android.text.format.DateUtils.getRelativeTimeSpanString(endDate.getTime()).toString();
+    }
+    public int getColorCoding() {
+        if(type == ItemType.INCIDENT)
+            return R.color.timespan_l;
+        long diffDays = (endDate.getTime()- Calendar.getInstance().getTime().getTime())/1000/60/60/24;
+        if(diffDays < 7)
+            return R.color.timespan_s;
+        if(diffDays < 14)
+            return R.color.timespan_m;
+        return R.color.timespan_l;
+
+    }
+
+
+    public String getFeedTitle(){
+        switch (type){
+            default:
+            case INCIDENT:
+                return "Current Incidents";
+            case PLANNED:
+                return "Planned Roadworks";
+            case ROADWORK:
+                return "Current Roadworks";
+        }
+    }
+
+
+    protected void extractRoadID(){
         String idRegex = "[MA]\\d{1,3}";
         Pattern regex = Pattern.compile(idRegex);
         Matcher matches = regex.matcher(this.title);
@@ -44,8 +91,8 @@ public class FeedItem {
             this.roadID = matches.group(0);
     }
 
-    public void extractWorkInfo(){
-        String workDatesRegex = "Start Date: (.*?)&lt;br /&gt;.*?End Date: (.*?)&lt;br /&gt;";
+    protected void extractWorkInfo(){
+        String workDatesRegex = "Start Date: (.*?)[\\n\\s\\t]*?End Date: (.*?)\\n";
         Pattern regex = Pattern.compile(workDatesRegex);
         Matcher matches = regex.matcher(this.description);
 
@@ -57,7 +104,7 @@ public class FeedItem {
         }
     }
 
-    public static Date parseDateString(String dateString, String pattern) {
+    protected static Date parseDateString(String dateString, String pattern) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(pattern, Locale.UK);
             Date date = formatter.parse(dateString);
@@ -82,7 +129,9 @@ public class FeedItem {
 
 
         //create resulting item
-        IncidentItem item = new IncidentItem();
+        FeedItem item = new FeedItem();
+        //set the source
+        item.source = str;
         //Item type set
         item.type = type;
 
@@ -112,8 +161,7 @@ public class FeedItem {
 
         //--EXTRACTIONS--//
         item.extractRoadID();
-        //if(item.type != ItemType.INCIDENT)
-            item.extractWorkInfo();
+        item.extractWorkInfo();
 
         return item;
     }

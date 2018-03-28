@@ -21,15 +21,6 @@
         app:tabSelectedTextColor="@android:color/white"
         app:tabTextColor="@android:color/white">
 
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Title_Incidents" />
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Title_Roadworks" />
     </android.support.design.widget.TabLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -67,35 +58,12 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <!--<android.support.v4.view.ViewPager-->
-        <!--android:id="@+id/viewPager"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-    <!--<android.support.v4.view.ViewPager-->
-        <!--android:id="@+id/viewPager"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <!--<fragment-->
-            <!--android:id="@+id/frag_Roadworks"-->
-            <!--class="uk.ac.gcu.mkolev200.trafficscotland.FeedListFragment"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
-
-        <!--<fragment-->
-            <!--android:id="@+id/frag_Planned"-->
-            <!--class="uk.ac.gcu.mkolev200.trafficscotland.FeedListFragment"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
-    <!--</android.support.v4.view.ViewPager>-->
-
-    <fragment
-        android:id="@+id/frag_Incidents"
-        class="uk.ac.gcu.mkolev200.trafficscotland.FeedListFragment"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <!--</android.support.v4.view.ViewPager>-->
+        android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>
 
 
 </LinearLayout>

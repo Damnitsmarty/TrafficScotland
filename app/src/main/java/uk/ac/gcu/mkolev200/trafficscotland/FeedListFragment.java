@@ -1,11 +1,10 @@
 package uk.ac.gcu.mkolev200.trafficscotland;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,12 +29,25 @@ import uk.ac.gcu.mkolev200.trafficscotland.data.FeedItem;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FeedListFragment.OnFragmentInteractionListener} interface
+ * {@link OnFragmentItemInteractionListener} interface
  * to handle interaction events.
  * Use the {@link FeedListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class FeedListFragment extends Fragment {
+
+    //fragment argument
+    public static final String ARG_FEED_TYPE = "arg:feed_type";
+
+    //static variables
+    //titles
+    public static final String TITLE_INCIDENTS = "Current Incidents";
+    public static final String TITLE_ROADWORKS = "Roadworks";
+    public static final String TITLE_PLANNED = "Planned Roadworks";
+    //urls
+    public static final String URL_INCIDENTS = "https://trafficscotland.org/rss/feeds/currentincidents.aspx";
+    public static final String URL_ROADWORKS = "https://trafficscotland.org/rss/feeds/roadworks.aspx";
+    public static final String URL_PLANNED = "https://trafficscotland.org/rss/feeds/plannedroadworks.aspx";
 
     //the swipeRefreshLayout parent that triggers updates
     SwipeRefreshLayout m_swipeRefreshLayout;
@@ -51,38 +63,33 @@ public class FeedListFragment extends Fragment {
     //the type of data this fragment fetches
     FeedItem.ItemType feedType;
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_FEED_TYPE = "arg_feedType";
-
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentItemInteractionListener m_listener;
 
     // Required empty public constructor
     public FeedListFragment() {}
 
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param arg_feedType The type of feed items this fragment will fetch.
-//     * @return A new instance of fragment FeedListFragment.
-//     */
-//    public static FeedListFragment newInstance(String arg_feedType) {
-//        FeedListFragment fragment = new FeedListFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_FEED_TYPE, arg_feedType);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
+    /**
+     *
+     * @param itemType A {@link FeedItem.ItemType} which defines the type of items contained within this fragment.
+     * @return A new instance of fragment FeedListFragment.
+     */
+    public static FeedListFragment newInstance(FeedItem.ItemType itemType) {
+        //construct fragment
+        FeedListFragment fragment = new FeedListFragment();
+        //register fragment args
+        Bundle args = new Bundle();
+        args.putString(ARG_FEED_TYPE, itemType.name());
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //get feedType from arguments
-//        if (getArguments() != null)
-//            this.feedType = FeedItem.ItemType.valueOf(getArguments().getString(ARG_FEED_TYPE));
+        // get feedType from arguments
+        if (getArguments() != null)
+            this.feedType = FeedItem.ItemType.valueOf(getArguments().getString(ARG_FEED_TYPE));
     }
 
     @Override
@@ -98,6 +105,8 @@ public class FeedListFragment extends Fragment {
         m_recyclerView.setLayoutManager(new LinearLayoutManager(v.getContext()));
 
         m_adapter = new FeedListAdapter(new ArrayList<FeedItem>());
+        //attach listener to list adapter
+        m_adapter.attachListener(m_listener);
 
         m_recyclerView.setAdapter(m_adapter);
 
@@ -108,6 +117,9 @@ public class FeedListFragment extends Fragment {
                 try_FetchFeed();
             }
         });
+
+        //start loading when created
+        try_FetchFeed();
         return v;
     }
 
@@ -117,17 +129,35 @@ public class FeedListFragment extends Fragment {
      * @return The URL to the feed containing this fragment's item type.
      */
     public String get_FeedURL(){
-        Resources r = getResources();
         if(this.feedType == null)
             this.feedType = FeedItem.ItemType.INCIDENT;
         switch (this.feedType){
             case INCIDENT:
             default:
-                return r.getString(R.string.RSS_incidents);
+                return URL_INCIDENTS;
             case PLANNED:
-                return r.getString(R.string.RSS_roadworks);
+                return URL_PLANNED;
             case ROADWORK:
-                return r.getString(R.string.RSS_roadworks);
+                return URL_ROADWORKS;
+
+        }
+    }
+    /**
+     * Gets the string resource containing the Title of the RSS Feed page appropriate
+     * for this fragment's type.
+     * @return The URL to the feed containing this fragment's item type.
+     */
+    public String get_FeedTitle(){
+        if(this.feedType == null)
+            this.feedType = FeedItem.ItemType.INCIDENT;
+        switch (this.feedType){
+            case INCIDENT:
+            default:
+                return TITLE_INCIDENTS;
+            case PLANNED:
+                return TITLE_PLANNED;
+            case ROADWORK:
+                return TITLE_ROADWORKS;
 
         }
     }
@@ -149,29 +179,21 @@ public class FeedListFragment extends Fragment {
         return true;
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentItemInteractionListener) {
+            m_listener = (OnFragmentItemInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFragmentItemInteractionListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        m_listener = null;
     }
 
     /**
@@ -184,9 +206,9 @@ public class FeedListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentItemInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onItemClick(FeedItem item);
     }
 
 
@@ -203,7 +225,6 @@ public class FeedListFragment extends Fragment {
         @Override
         protected void onPostExecute(List<FeedItem> res) {
             m_swipeRefreshLayout.setRefreshing(false);
-
             m_adapter.swapList(res);
         }
 
@@ -242,7 +263,7 @@ public class FeedListFragment extends Fragment {
                 //close the reader
                 bReader.close();
 
-                List<FeedItem> list = parseFeedRegex(FeedItem.ItemType.INCIDENT, source);
+                List<FeedItem> list = parseFeedRegex(feedType, source);
 
                 return list;
 

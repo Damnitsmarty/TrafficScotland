@@ -4,4 +4,9 @@
     <color name="colorPrimaryLight">#635bc3</color>
     <color name="colorPrimaryDark">#000c63</color>
     <color name="colorAccent">#e3e4ed</color>
+
+
+    <color name="timespan_s">#86a846</color>
+    <color name="timespan_m">#d98047</color>
+    <color name="timespan_l">#b34640</color>
 </resources>
